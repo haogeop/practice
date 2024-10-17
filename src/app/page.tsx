@@ -1,101 +1,158 @@
+"use client";
 import Image from "next/image";
+import { AppBar, Toolbar, Typography, Button, Box, Grid, TextField } from '@material-ui/core'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Stack from '@mui/material/Stack';
+import React, { useEffect, useState} from "react";
+import './globals.css'
+import { createWalletClient, http, custom } from 'viem'
+import { mainnet } from "viem/chains";
 
-export default function Home() {
+import Home from './components/Home'
+import Smallbiz from './components/Smallbiz'
+import WalletTransfer from './components/WalletTransfer'
+import WalletPage from './components/WalletPage'
+import Payment from "./components/Payment";
+import { ConnectWallet } from './components/ConnectWallet'
+import { WagmiProvider } from "wagmi";
+import { config } from '../utils/wagmi'
+
+const URL_TMP = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=%s"
+const client = new QueryClient();
+
+export default function App() {
+  const [url, setUrl] = useState('')
+  const [isQrUrlSubmitted, setIsQrUrlSubmitted] = useState(false)
+  const [qrUrl, setQrUrl] = useState('')
+
+  const [pageNum, setPageNum] = useState(7)
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    let user_url = URL_TMP.replace("%s", url)
+    setIsQrUrlSubmitted(true)
+    setQrUrl(user_url)
+  }
+
+  useEffect(() => {
+    const walletClient = createWalletClient({
+      chain: mainnet,transport: http()
+    })
+  }, [])
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={client}>
+        <div className="App">
+          <main>
+            <Box>
+              <AppBar position="static">
+                <Toolbar>
+                <Typography variant="h4" component="div" >
+                  Deloaner
+                </Typography> 
+                <Button onClick={() => setPageNum(7)} color="inherit">Home</Button>
+                <Button onClick={() => setPageNum(1)} color="inherit">Auth</Button>
+                <Button onClick={() => setPageNum(2)} color="inherit">Dashboard</Button>
+                <Button onClick={() => setPageNum(3)} color="inherit">Payment</Button>
+                <Button onClick={() => setPageNum(4)} color="inherit">Connect</Button>
+                <Button onClick={() => setPageNum(5)} color="inherit">Login</Button>
+                <Button onClick={() => setPageNum(6)} color="inherit">Transfer</Button>
+                </Toolbar>
+              </AppBar>
+            </Box>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            {pageNum === 7 && <Home />}
+            {pageNum === 1 && (
+              <form onSubmit={handleSubmit}>
+                <div style={{marginTop: '25px', marginLeft: '600px'}}>
+                  <Box sx={{width: "100%", maxWidth: 800, bgcolor: "background.paper" }}>
+                    <Grid item xs={12} md={6}>
+                      <Stack direction="column" spacing={2}>
+                        {/** 输入网址 生成二维码 */}
+                        <TextField 
+                          required
+                          id="Website URL"
+                          label="Website URL"
+                          defaultValue=""
+                          value={url}
+                          onChange={(e) => setUrl(e.target.value)}
+                        />
+
+                        <button type='submit'> Creat QR Code</button>
+                        <button onClick={() => setPageNum(2)}> Business Owner Dashboard</button>
+                        <button onClick={() => window.open(qrUrl)}>{isQrUrlSubmitted ? "View QR Code" : "Not Submitted"}</button>
+                      </Stack>
+                    </Grid>
+                  </Box>
+                </div>
+              </form>
+            )}
+            {pageNum === 2 && (
+              <Smallbiz />
+            )}
+            {pageNum === 3 && (
+              <Payment pageNum={pageNum} setPageNum={setPageNum} />
+            )}
+            {pageNum === 4 && (
+              <ConnectWallet />
+            )}
+            {pageNum === 5 && (
+              <WalletPage pageNum={pageNum} setPageNum={setPageNum} />
+            )}
+            {pageNum === 6 && (
+              <WalletTransfer  />
+            )}
+          </main>
+          {/* <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
+            <a
+              className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                aria-hidden
+                src="https://nextjs.org/icons/file.svg"
+                alt="File icon"
+                width={16}
+                height={16}
+              />
+              Learn
+            </a>
+            <a
+              className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                aria-hidden
+                src="https://nextjs.org/icons/window.svg"
+                alt="Window icon"
+                width={16}
+                height={16}
+              />
+              Examples
+            </a>
+            <a
+              className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+              href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                aria-hidden
+                src="https://nextjs.org/icons/globe.svg"
+                alt="Globe icon"
+                width={16}
+                height={16}
+              />
+              Go to nextjs.org →
+            </a>
+          </footer> */}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 }
