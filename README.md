@@ -1,36 +1,12 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Uniloaner was envisioned to be a Point-Of-Sale attached commission based loan payback mechanism directed at small businesses in its initial venture.
 
-## Getting Started
+### Case analysis for its ideal benefits
 
-First, run the development server:
+The basis of Uniloaner is a commission-based loan payback mechanism, where until the borrower pays the amount, there is a commission applied to every transaction through a payment medium. 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Uniloaner will provide a payment medium, which will eliminate the transaction fees, small business owners have to provide to credit card companies and other payment mediums while ensuring the process of loan payback is stringent.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+A commission-based loan payback promises a loan retrieval of 90%+ because, in normal loans, every business starts with the hope to keep up with their loan payments, but there is always a chance of mismanagement of funds. Still, Uniloaner removes the possibility of that by taking away the choice to allocate those funds to anything else, by taking the commission at the point of transaction. 
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Another one of the great positives that Uniloaner offers, is the inexistence of compound interest. Since all of the interest amounts are taken at every minuscule transaction, hence it does not compound in the long run, while ensuring that Uniloaner still gets its pre-defined interest amount.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
